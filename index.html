@@ -1,68 +1,632 @@
 <!DOCTYPE html>
+<!--
+  Template: AVANTGARDE v1.0 (Portfolio Custom - Light Mode)
+  Original Author: Haruki Tominaga
+  Customized for Personal Portfolio
+-->
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <title>Portfolio - Taro Yamada</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Noto+Sans+JP:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* * ==========================================
+         * ★ 配色設定 (Color Palette) - Light Mode
+         * ==========================================
+         */
+        :root {
+            --bg: #ffffff;   /* 背景色（白） */
+            --text: #333333; /* 基本文字色（濃いグレー） */
+            --border: #e0e0e0; /* ボーダー色（薄いグレー） */
+            --hover-bg: #f5f5f5; /* ホバー時の背景色 */
+        }
+        
+        /* カーソル非表示（カスタムカーソルを使用するため） */
+        * { cursor: none !important; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ★インタラクティブ背景用キャンバス */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; /* 最背面 */
+            filter: blur(80px); 
+            opacity: 0.9; 
+        }
+
+        /* リンク設定 */
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #000; /* ホバー時は真っ黒に */
+        }
+
+        /* ノイズエフェクト */
+        .noise {
+            position: fixed; inset: 0; z-index: 999;
+            pointer-events: none; opacity: 0.03;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz4=');
+        }
+
+        /* カスタムカーソル */
+        .cursor-dot, .cursor-circle {
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10000;
+            border-radius: 50%; transform: translate(-50%, -50%);
+            mix-blend-mode: exclusion; 
+        }
+        .cursor-dot { width: 8px; height: 8px; background: white; }
+        .cursor-circle {
+            width: 40px; height: 40px; border: 1px solid white;
+            transition: width 0.3s, height 0.3s, background 0.3s;
+        }
+        body.hovering .cursor-circle { 
+            width: 80px; height: 80px; 
+            background: rgba(255,255,255,1); 
+            border-color: transparent; 
+        }
+
+        /* コンテナ */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 4vw; }
+
+        /* ヘッダーエリア */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            position: relative;
+        }
+        .hero-big {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 10vw; text-transform: uppercase; line-height: 0.9;
+            color: transparent; 
+            -webkit-text-stroke: 1px rgba(0,0,0,0.8); 
+            margin: 0; transition: 0.5s;
+        }
+        .hero:hover .hero-big { color: #000; }
+
+        .hero-desc {
+            margin-top: 2rem; max-width: 400px; font-size: 0.9rem; line-height: 1.8; color: #666;
+            margin-left: auto;
+        }
+
+        /* セクション共通設定 */
+        .sec { padding: 10rem 0; }
+        .sec-title {
+            font-family: 'Syncopate', sans-serif; font-size: 3rem; margin-bottom: 4rem;
+            border-bottom: 1px solid var(--border); padding-bottom: 1rem; display: inline-block;
+        }
+
+        /* Expertise (サービスリスト) */
+        .service-list { border-top: 1px solid var(--border); }
+        .srv-item {
+            border-bottom: 1px solid var(--border); padding: 3rem 0;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.4s; position: relative; overflow: hidden;
+            display: none; 
+            color: var(--text);
+        }
+        .srv-item.visible { display: flex; animation: fadeIn 0.5s forwards; }
+
+        .srv-item:hover { padding-left: 2rem; background: rgba(255,255,255,0.4); }
+        .srv-num { font-family: 'Syncopate'; color: #999; margin-right: 2rem; }
+        .srv-name { font-size: 2.5rem; font-weight: 300; }
+        .srv-arrow { font-size: 2rem; opacity: 0; transition: 0.4s; transform: translateX(-20px); }
+        .srv-item:hover .srv-arrow { opacity: 1; transform: translateX(0); }
+
+        /* Selected Works (画像ギャラリー) */
+        .gallery {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10vw; margin-top: 5rem;
+        }
+        .gal-item { margin-bottom: 10rem; display: none; }
+        .gal-item.loaded { display: block; animation: fadeIn 1s ease forwards; }
+        
+        .gal-item:nth-child(even) { margin-top: 15rem; }
+
+        .img-mask {
+            width: 100%; overflow: hidden; position: relative; cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+        }
+        .g-img {
+            width: 100%; height: auto; display: block; filter: grayscale(100%);
+            transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(1.1);
+        }
+        .img-mask:hover .g-img { filter: grayscale(0%); transform: scale(1); }
+        
+        .g-title { font-family: 'Syncopate'; font-size: 1.2rem; margin-top: 1rem; display: block; color: #000; }
+        .g-sub { color: #888; font-size: 0.8rem; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Profile */
+        .company-area {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+            border-top: 1px solid var(--border); 
+            padding-top: 2rem;
+        }
+        .co-dl { display: grid; grid-template-columns: 150px 1fr; row-gap: 2rem; margin: 0; }
+        .co-dt { font-family: 'Syncopate'; font-weight: 700; color: #888; }
+        .co-dd { margin: 0; font-weight: 300; line-height: 1.8; }
+
+        /* フッター */
+        footer {
+            padding: 5rem 0; text-align: center; border-top: 1px solid var(--border); margin-top: 5rem;
+        }
+        .f-contact {
+            font-size: 5vw; font-weight: 700; text-decoration: none; color: #333;
+            display: inline-block; transition: 0.3s;
+        }
+        .f-contact:hover { letter-spacing: 0.1em; color: #000; }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed; inset: 0; background: rgba(255,255,255,0.98); 
+            z-index: 5000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+            padding: 4vw;
+        }
+        .lightbox.active { opacity: 1; pointer-events: auto; }
+
+        .lb-content {
+            display: flex; width: 100%; max-width: 1200px; gap: 4rem;
+            align-items: center; justify-content: center;
+            transform: scale(0.95); transition: 0.4s;
+        }
+        .lightbox.active .lb-content { transform: scale(1); }
+
+        .lb-img-wrap { flex: 3; max-height: 80vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        .lb-img {
+            max-width: 100%; max-height: 80vh; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+            display: block; width: auto; height: auto;
+        }
+        /* ★動画用スタイルの追加 */
+        .lb-video {
+            width: 100%; height: 50vh; /* デフォルトの高さ */
+            aspect-ratio: 16 / 9;
+            max-width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            display: none; /* 初期状態は非表示 */
+        }
+
+        .lb-info { 
+            flex: 2; display: none; flex-direction: column; justify-content: center; 
+            text-align: left; opacity: 0; transform: translateX(20px); transition: 0.5s 0.2s;
+        }
+        .lightbox.active .lb-info { opacity: 1; transform: translateX(0); }
+        
+        .lightbox.has-text .lb-info { display: flex; }
+        .lightbox.has-text .lb-content { max-width: 1200px; }
+
+        .lightbox:not(.has-text) .lb-img-wrap { flex: auto; width: 100%; justify-content: center; }
+        .lightbox:not(.has-text) .lb-content { max-width: auto; justify-content: center; }
+
+        .lb-title { font-family: 'Syncopate'; font-size: 2.5rem; margin-bottom: 1.5rem; color: #000; line-height: 1.1; }
+        .lb-desc { font-size: 0.95rem; line-height: 1.8; color: #666; border-left: 1px solid #ccc; padding-left: 1.5rem; }
+
+        .lb-close {
+            position: absolute; top: 30px; right: 30px; font-size: 1.5rem; color: #000;
+            font-family: 'Syncopate'; cursor: pointer; z-index: 10;
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .hero-big { font-size: 15vw; }
+            .gallery { grid-template-columns: 1fr; gap: 2rem; }
+            .gal-item:nth-child(even) { margin-top: 0; }
+            .company-area { grid-template-columns: 1fr; gap: 3rem; }
+            .co-dl { display: block; }
+            .co-dt { margin-bottom: 0.5rem; margin-top: 1.5rem; font-size: 0.9rem; }
+            .co-dd { margin-left: 0; margin-bottom: 1rem; }
+            .lb-content { flex-direction: column; gap: 2rem; overflow-y: auto; max-height: 90vh; }
+            .lb-img-wrap { width: 100%; flex: none; }
+            .lb-img { max-height: 50vh; width: 100%; object-fit: contain; }
+            .lb-video { height: 30vh; }
+            .lb-info { width: 100%; padding-bottom: 2rem; }
+            .lb-title { font-size: 1.8rem; }
+            .cursor-dot, .cursor-circle { display: none; }
+            * { cursor: auto !important; }
+        }
+    </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
+    <div class="noise"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
 
-    <div class="smooth-wrapper">
-        
-        <header class="hero">
-            <div class="hero-content">
-                <h1>PORTFOLIO</h1>
-                <p>Scroll to Explore</p>
+    <div id="lightbox" class="lightbox">
+        <div class="lb-close hover-target">CLOSE</div>
+        <div class="lb-content">
+            <div class="lb-img-wrap">
+                <img id="lb-img" class="lb-img" src="" alt="">
+                <!-- ★動画表示用のiframeを追加 -->
+                <iframe id="lb-video" class="lb-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
-            <div class="hero-bg"></div>
-        </header>
-
-        <section class="intro">
-            <div class="container">
-                <h2>Creative Developer</h2>
-                <p class="reveal-text">
-                    デジタル体験を創造します。<br>
-                    美しさと機能性を兼ね備えたWebサイト制作。
-                </p>
+            <div class="lb-info">
+                <h3 id="lb-title" class="lb-title"></h3>
+                <p id="lb-desc" class="lb-desc"></p>
             </div>
-        </section>
-
-        <section class="horizontal-scroll-container">
-            <div class="horizontal-wrapper">
-                <div class="card">
-                    <h3>Project 01</h3>
-                    <p>Web Design</p>
-                </div>
-                <div class="card">
-                    <h3>Project 02</h3>
-                    <p>App Development</p>
-                </div>
-                <div class="card">
-                    <h3>Project 03</h3>
-                    <p>Branding</p>
-                </div>
-                <div class="card">
-                    <h3>Project 04</h3>
-                    <p>Photography</p>
-                </div>
-            </div>
-        </section>
-
-        <footer class="footer">
-            <h2>Let's Talk</h2>
-            <a href="mailto:example@email.com" class="btn">Contact Me</a>
-        </footer>
-
+        </div>
     </div>
 
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
-    <script src="script.js"></script>
+    <div class="container">
+        <header class="hero">
+            <h1 id="hero-title" class="hero-big hover-target"></h1>
+            <p id="hero-desc" class="hero-desc"></p>
+        </header>
+
+        <section class="sec">
+            <h2 class="sec-title">Skillset</h2>
+            <div id="service-list" class="service-list"></div>
+        </section>
+
+        <section class="sec">
+            <h2 class="sec-title">Selected Works</h2>
+            <div id="gallery" class="gallery"></div>
+        </section>
+
+        <section class="sec" style="padding-top: 0;">
+            <h2 class="sec-title">Profile</h2>
+            <div class="company-area">
+                <div>
+                    <p style="margin-top:0; font-size:1.1rem; line-height:2; margin-bottom: 2rem;">
+                        デジタルハリウッド大学大学院に所属し、<br>
+                        コンテンツビジネスとクリエイティブの融合を探求。<br>
+                        現在はゲーム業界でPR・マーケティングに従事しながら、<br>
+                        フリーランスのコンポーザーとして楽曲提供も行っています。<br>
+                        多角的な視点で「記憶に残る体験」をデザインします。
+                    </p>
+                </div>
+                <dl class="co-dl">
+                    <dt class="co-dt">NAME</dt>
+                    <dd class="co-dd">Genta Honma<br>本間 玄太</dd>
+                    <dt class="co-dt">AFFILIATION</dt>
+                    <dd class="co-dd">Digital Hollywood Univ.<br>Graduate School</dd>
+                    <dt class="co-dt">ROLE</dt>
+                    <dd class="co-dd">Game Marketer / PR<br>Composer</dd>
+                    <dt class="co-dt">CONTACT</dt>
+                    <dd class="co-dd">magentabook7@gmail.com</dd>
+                </dl>
+            </div>
+        </section>
+
+        <footer>
+            <a href="#" id="contact-link" class="f-contact hover-target">CONTACT ME</a>
+            <div style="margin-top: 3rem; color: #888;">
+                &copy; <span id="year"></span> <span id="footer-name"></span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /**
+         * ========================================================
+         * ★ 設定エリア (Configuration)
+         * ========================================================
+         */
+        const config = {
+            name: "Genta Honma", 
+            title: "PORT<br>FOLIO", 
+            desc: "Graduate Student at DHGS.<br>Game Marketer & Freelance Composer.",
+            email: "magentabook7@gmail.com", 
+            
+            // ★Skillset（スキルリスト）
+            expertiseData: [
+                { 
+                    title: "Sound Design", 
+                    desc: "コンポーザーとして、ゲーム音楽や映像音楽の制作・リミックスを行います。世界観に寄り添い、プレイヤーの感情を揺さぶるサウンドスケープを提供します。",
+                    // ★YouTubeのURLを貼ってください。自動的に埋め込み形式に変換されます。
+                    video: "https://www.youtube.com/watch?v=C5UskEVhGII",
+                    image: "https://placehold.co/800x600/eee/333?text=Sound+Design"
+                },
+                { 
+                    title: "Game Marketing", 
+                    desc: "ゲームタイトルやデバイスのPR戦略立案から実行まで。ターゲット層への的確なアプローチと、コミュニティを巻き込んだマーケティング施策を展開します。",
+                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451382592266834070/image.png?ex=6945f8df&is=6944a75f&hm=9a5d9588d55ab5315e4d13442bfabd9af56cfdc37e9622da11d539cfb66d168b&=&format=webp&quality=lossless" 
+                },
+                { 
+                    title: "Influencer Mgt", 
+                    desc: "インフルエンサーとのリレーション構築およびマネジメント。ゲームの魅力を最大限に引き出す配信企画の提案や、効果的なプロモーションを実施します。",
+                    image: "https://cdn.discordapp.com/attachments/1446472524182323200/1451383363976958134/33964-49-b80d536835f0a817afc03d026d8720ad-1920x1080.png?ex=6945f997&is=6944a817&hm=f744bf6f43ea1d0ebfa4f45f59a0a116dd83bbbccd48d61afa853654a746b495&" 
+                }
+            ],
+
+            // ★Selected Works（実績リスト）
+            worksData: [
+                {
+                    title: "AIといっしょに作るKawaiiFutureBass入門ガイド",
+                    category: "Technical Doujin Book",
+                    image: "https://cdn.discordapp.com/attachments/1446472524182323200/1451387313685795000/image.png?ex=6945fd45&is=6944abc5&hm=ac14b0505e9e957eaf7a39ca8a757205c7b13d010ee798e88d50c511ed79d62f" 
+                },
+                {
+                    title: "Shiseido Professional WONDER SHIELD!",
+                    category: "Sound Design",
+                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451389911662854345/image.png?ex=6945ffb0&is=6944ae30&hm=daed87f3acb3f2a32733d205a673d409999281acc6e8891ed9014440e6cbe0bd&=&format=webp&quality=lossless"
+                },
+                {
+                    title: "Nana Endo QI Flyer",
+                    category: "Graphic Design",
+                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451387374603866192/image.png?ex=6945fd53&is=6944abd3&hm=4102feb399851314bbb0a8190d78a565585504d092558bea7d0ba3cfad0edbec&=&format=webp&quality=lossless&width=644&height=904"
+                },
+                {
+                    title: "囚われの形",
+                    category: "Installation",
+                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451391693697060965/image.png?ex=69460159&is=6944afd9&hm=f9b1aed2430c2ef0d020cb20cefda56da3dbcf699693709f479d3ead32bf4aa6&=&format=webp&quality=lossless"
+                },
+                {
+                    title: "小学生用プログラミング教材",
+                    category: "Planning/Programming",
+                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451387581471129751/image.png?ex=6945fd84&is=6944ac04&hm=d07e038bb9ae014327b737041106e525a7fd05fd6808ab0cb737f141ca84def7&=&format=webp&quality=lossless"
+                },
+                {
+                    title: "Youtube Channel",
+                    category: "Sound",
+                    image: "https://cdn.discordapp.com/attachments/1446472524182323200/1451392294732173565/image.png?ex=694601e8&is=6944b068&hm=9ca4721af3716d0c5e5cb389a82d86486a7200331e48565fd26b21e15963b7b7&"
+                }
+            ]
+        };
+
+        // ▼ ロジック部分
+        document.addEventListener('DOMContentLoaded', () => {
+            // 基本情報反映
+            document.getElementById('hero-title').innerHTML = config.title;
+            document.getElementById('hero-desc').innerHTML = config.desc;
+            document.getElementById('contact-link').href = config.email;
+            document.getElementById('footer-name').textContent = config.name;
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // --- Skillsetリスト生成 ---
+            const srvList = document.getElementById('service-list');
+            config.expertiseData.forEach((data, i) => {
+                const fileNum = i + 1;
+                const imgSrc = data.image || `https://placehold.co/800x600/eee/333?text=Skill+${fileNum}`;
+
+                const div = document.createElement('div');
+                div.className = 'srv-item hover-target';
+                div.style.display = 'none'; 
+                div.innerHTML = `
+                    <div style="display:flex; align-items:center;">
+                        <span class="srv-num">/${String(fileNum).padStart(2, '0')}</span>
+                        <span class="srv-name">${data.title}</span>
+                    </div>
+                    <span class="srv-arrow">VIEW DETAIL →</span>
+                `;
+
+                const imgCheck = new Image();
+                imgCheck.onload = function() {
+                    div.style.display = 'flex';
+                    div.classList.add('visible');
+                    div.addEventListener('click', () => {
+                        // ★動画URL(data.video)も渡すように変更
+                        openLightbox(imgSrc, data.title, data.desc, data.video);
+                    });
+                };
+                imgCheck.src = imgSrc;
+                srvList.appendChild(div);
+            });
+
+            // --- Selected Works (Gallery) 生成 ---
+            const gallery = document.getElementById('gallery');
+            config.worksData.forEach((work, i) => {
+                const item = document.createElement('div');
+                item.className = 'gal-item';
+                const imgSrc = work.image || `https://placehold.co/600x800/eee/333?text=Work+${i+1}`;
+
+                item.innerHTML = `
+                    <div class="img-mask hover-target" onclick="openLightbox('${imgSrc}')">
+                        <img src="${imgSrc}" class="g-img" alt="${work.title}" 
+                            onload="this.closest('.gal-item').classList.add('loaded')" 
+                            onerror="this.closest('.gal-item').remove()"> </div>
+                    <span class="g-title">${work.title}</span>
+                    <span class="g-sub">${work.category}</span>
+                `;
+                gallery.appendChild(item);
+            });
+
+            // --- ライトボックス制御 ---
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lb-img');
+            const lbVideo = document.getElementById('lb-video'); // ★動画要素
+            const lbTitle = document.getElementById('lb-title');
+            const lbDesc = document.getElementById('lb-desc');
+            
+            // YouTube URLを埋め込み用に変換するヘルパー関数 (強化版)
+            const getEmbedUrl = (url) => {
+                if (!url) return null;
+                // すでにembed形式で、かつパラメータ調整済みならそのまま
+                if (url.includes('/embed/') && url.includes('playsinline=1')) return url;
+                
+                let id = null;
+                
+                // ID抽出ロジック (正規表現)
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = url.match(regExp);
+
+                if (match && match[2].length === 11) {
+                    id = match[2];
+                }
+
+                if (id) {
+                    // エラー153回避のため、playsinline等のパラメータを付与
+                    return `https://www.youtube.com/embed/${id}?playsinline=1&rel=0`;
+                }
+                
+                // フォールバック
+                return url; 
+            };
+
+            // ★第4引数に videoUrl を追加
+            window.openLightbox = (src, title = null, desc = null, videoUrl = null) => {
+                if (videoUrl) {
+                    // 動画がある場合：画像を隠してiframeを表示
+                    lbImg.style.display = 'none';
+                    lbVideo.style.display = 'block';
+                    // 自動変換したURLをセット
+                    lbVideo.src = getEmbedUrl(videoUrl);
+                } else {
+                    // 動画がない場合：画像をセットしてiframeを隠す
+                    lbVideo.style.display = 'none';
+                    lbImg.style.display = 'block';
+                    lbImg.src = src;
+                    lbVideo.src = ""; // 再生停止
+                }
+
+                if (title) {
+                    lb.classList.add('has-text');
+                    lbTitle.textContent = title;
+                    lbDesc.textContent = desc || "";
+                } else {
+                    lb.classList.remove('has-text');
+                    lbTitle.textContent = "";
+                    lbDesc.textContent = "";
+                }
+                lb.classList.add('active');
+            };
+
+            // 閉じる処理
+            const closeLightbox = () => {
+                lb.classList.remove('active');
+                setTimeout(() => { 
+                    lbImg.src = ''; 
+                    lbVideo.src = ''; // ★動画もリセット
+                    lb.classList.remove('has-text');
+                }, 400);
+            };
+
+            lb.addEventListener('click', (e) => {
+                // 背景クリック時のみ閉じる（コンテンツクリック時は閉じない）
+                if (e.target === lb || e.target.classList.contains('lb-content') || e.target.classList.contains('lb-img-wrap')) {
+                    closeLightbox();
+                }
+            });
+            
+            document.querySelector('.lb-close').addEventListener('click', closeLightbox);
+
+            // --- カーソル制御 ---
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorCircle = document.querySelector('.cursor-circle');
+            let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursorDot.style.left = mouseX + 'px';
+                cursorDot.style.top = mouseY + 'px';
+            });
+
+            function animateCursor() {
+                const dx = mouseX - cursorX;
+                const dy = mouseY - cursorY;
+                cursorX += dx * 0.15;
+                cursorY += dy * 0.15;
+                cursorCircle.style.left = cursorX + 'px';
+                cursorCircle.style.top = cursorY + 'px';
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+
+            document.body.addEventListener('mouseover', (e) => {
+                if (e.target.closest('.hover-target') || e.target.tagName === 'A') {
+                    document.body.classList.add('hovering');
+                } else {
+                    document.body.classList.remove('hovering');
+                }
+            });
+
+            // ==========================================
+            // ★ Canvas背景アニメーション
+            // ==========================================
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let blobs = [];
+
+            const colors = [
+                '#FF85A2', '#FF5C8D', '#FF85A2', '#4DD0E1', '#00B0FF', '#4DD0E1', '#FFEB3B'
+            ];
+
+            class Blob {
+                constructor() { this.init(); }
+                init() {
+                    this.radius = Math.random() * 500 + 400; 
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5; 
+                    this.vy = (Math.random() - 0.5) * 0.5; 
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.originalRadius = this.radius;
+                }
+                update(scrollOffset) {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < -this.radius) this.x = width + this.radius;
+                    if (this.x > width + this.radius) this.x = -this.radius;
+                    if (this.y < -this.radius) this.y = height + this.radius;
+                    if (this.y > height + this.radius) this.y = -this.radius;
+
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (dist < 300) {
+                        this.radius += (this.originalRadius * 1.5 - this.radius) * 0.05;
+                        this.x -= dx * 0.005; 
+                        this.y -= dy * 0.005;
+                    } else {
+                        this.radius += (this.originalRadius - this.radius) * 0.05;
+                    }
+                    this.renderY = this.y - scrollOffset * 0.2; 
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.renderY, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+
+            function initCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                blobs = [];
+                const blobCount = Math.floor(window.innerWidth / 150);
+                for(let i=0; i<blobCount; i++) blobs.push(new Blob());
+            }
+
+            function animateCanvas() {
+                ctx.clearRect(0, 0, width, height);
+                const scrollOffset = window.scrollY;
+                blobs.forEach(blob => {
+                    blob.update(scrollOffset);
+                    blob.draw();
+                });
+                requestAnimationFrame(animateCanvas);
+            }
+
+            window.addEventListener('resize', initCanvas);
+            initCanvas();
+            animateCanvas();
+        });
+    </script>
 </body>
 </html>
