@@ -1,0 +1,144 @@
+:root {
+    --bg-color: #050505;
+    --text-color: #ffffff;
+    --accent-cyan: #00f0ff; /* サイバーパンク的なシアン */
+    --accent-purple: #7000ff;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+/* 背景Canvas */
+#canvas-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ナビゲーション */
+.top-nav {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    z-index: 100;
+}
+
+.back-link {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: var(--accent-cyan);
+}
+
+/* ヒーローセクション */
+.ny-hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.label, .sub-label {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.5);
+    margin: 1rem 0;
+}
+
+/* グリッチ風テキスト */
+.glitch-text {
+    font-size: 15vw;
+    font-weight: 900;
+    line-height: 1;
+    position: relative;
+    background: linear-gradient(45deg, #fff, var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* メッセージセクション */
+.ny-message {
+    padding: 10vh 10vw;
+}
+
+.msg-block {
+    margin-bottom: 20vh;
+    opacity: 0.1; /* スクロール前の初期状態 */
+}
+
+.msg-block h2 {
+    font-size: 6vw;
+    margin-bottom: 1rem;
+    color: var(--accent-cyan);
+}
+
+.msg-block p {
+    font-size: 1.5rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.8;
+}
+
+.msg-block.right {
+    text-align: right;
+}
+
+.msg-block.right h2 {
+    color: var(--accent-purple);
+}
+
+/* フッター */
+.ny-footer {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle-btn-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.circle-btn {
+    display: flex;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.3);
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.5s ease;
+    backdrop-filter: blur(5px);
+}
+
+.circle-btn:hover {
+    background: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    color: #000;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px var(--accent-cyan);
+}
+
+.copyright {
+    margin-top: 5rem;
+    font-size: 0.8rem;
+    color: #444;
+}
