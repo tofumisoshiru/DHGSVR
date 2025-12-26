@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-
+<!--
+  Template: AVANTGARDE v1.0 (Portfolio Custom - Light Mode)
+  Original Author: Haruki Tominaga
+  Customized for Personal Portfolio
+-->
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +11,7 @@
     
     <meta name="robots" content="noindex, nofollow">
     
-    <title>Portfolio - Genta Honma</title>
+    <title>Portfolio - Taro Yamada</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Noto+Sans+JP:wght@300;500&display=swap" rel="stylesheet">
@@ -171,6 +175,19 @@
         }
         .f-contact:hover { letter-spacing: 0.1em; color: #000; }
 
+        /* ★SPECIAL LINK (New Year) */
+        .special-link {
+            display: inline-block; margin-top: 2rem;
+            font-family: 'Syncopate', sans-serif; 
+            font-weight: 700; color: #FF85A2; 
+            border: 1px solid #FF85A2; padding: 10px 20px;
+            border-radius: 50px; font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .special-link:hover {
+            background: #FF85A2; color: #fff;
+        }
+
         /* Lightbox */
         .lightbox {
             position: fixed; inset: 0; background: rgba(255,255,255,0.98); 
@@ -264,12 +281,6 @@
         </div>
     </div>
 
-    <div style="text-align: center; margin-top: 2rem;">
-        <a href="newyear2026.html" class="btn" style="border-color: #00f0ff; color: #00f0ff;">
-            View 2026 Vision
-        </a>
-    </div>
-
     <div class="container">
         <header class="hero">
             <h1 id="hero-title" class="hero-big hover-target"></h1>
@@ -313,6 +324,8 @@
 
         <footer>
             <a href="#" id="contact-link" class="f-contact hover-target">CONTACT ME</a>
+            <br>
+            <a href="newyear2026.html" class="special-link hover-target">🎉 SPECIAL: NEW YEAR 2026</a>
             <div style="margin-top: 3rem; color: #888;">
                 &copy; <span id="year"></span> <span id="footer-name"></span>
             </div>
@@ -343,12 +356,15 @@
                 { 
                     title: "Game Marketing", 
                     desc: "ゲームタイトルやデバイスのPR戦略立案から実行まで。ターゲット層への的確なアプローチと、コミュニティを巻き込んだマーケティング施策を展開します。",
-                    image: "https://drive.google.com/file/d/1YRrgVIXjcStq4c2KdVqvby1wEqXy4Ov6/view?usp=drive_link" 
+                    // 画像リンク切れのためプレースホルダーに戻しました。
+                    // 永続的なURLを取得後、書き換えてください。
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/markering.png?raw=true" 
                 },
                 { 
                     title: "Influencer Mgt", 
                     desc: "インフルエンサーとのリレーション構築およびマネジメント。ゲームの魅力を最大限に引き出す配信企画の提案や、効果的なプロモーションを実施します。",
-                    image: "https://drive.google.com/file/d/1EID7NgmWblpWZ-QRGOoANABtf8c2H9bA/view?usp=drive_link" 
+                    // 画像リンク切れのためプレースホルダーに戻しました。
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/rush.png?raw=true" 
                 }
             ],
 
@@ -357,32 +373,33 @@
                 {
                     title: "AIといっしょに作るKawaiiFutureBass入門ガイド",
                     category: "Technical Doujin Book",
-                    image: "https://cdn.discordapp.com/attachments/1446472524182323200/1451387313685795000/image.png?ex=6945fd45&is=6944abc5&hm=ac14b0505e9e957eaf7a39ca8a757205c7b13d010ee798e88d50c511ed79d62f" 
+                    // 画像リンク切れのためプレースホルダーに戻しました。
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/Kawaii.png?raw=true" 
                 },
                 {
                     title: "Shiseido Professional WONDER SHIELD!",
                     category: "Sound Design",
-                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451389911662854345/image.png?ex=6945ffb0&is=6944ae30&hm=daed87f3acb3f2a32733d205a673d409999281acc6e8891ed9014440e6cbe0bd&=&format=webp&quality=lossless"
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/Wonder.png?raw=true"
                 },
                 {
                     title: "Nana Endo QI Flyer",
                     category: "Graphic Design",
-                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451387374603866192/image.png?ex=6945fd53&is=6944abd3&hm=4102feb399851314bbb0a8190d78a565585504d092558bea7d0ba3cfad0edbec&=&format=webp&quality=lossless&width=644&height=904"
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/Qi.png?raw=true"
                 },
                 {
                     title: "囚われの形",
                     category: "Installation",
-                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451391693697060965/image.png?ex=69460159&is=6944afd9&hm=f9b1aed2430c2ef0d020cb20cefda56da3dbcf699693709f479d3ead32bf4aa6&=&format=webp&quality=lossless"
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/sotsuten.png?raw=true"
                 },
                 {
                     title: "小学生用プログラミング教材",
                     category: "Planning/Programming",
-                    image: "https://media.discordapp.net/attachments/1446472524182323200/1451387581471129751/image.png?ex=6945fd84&is=6944ac04&hm=d07e038bb9ae014327b737041106e525a7fd05fd6808ab0cb737f141ca84def7&=&format=webp&quality=lossless"
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/shakai.png?raw=true"
                 },
                 {
                     title: "Youtube Channel",
                     category: "Sound",
-                    image: "https://cdn.discordapp.com/attachments/1446472524182323200/1451392294732173565/image.png?ex=694601e8&is=6944b068&hm=9ca4721af3716d0c5e5cb389a82d86486a7200331e48565fd26b21e15963b7b7&"
+                    image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/YouTubeIcon.png?raw=true"
                 }
             ]
         };
