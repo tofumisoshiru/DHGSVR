@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-  Template: AVANTGARDE v1.0 (Portfolio Custom - Light Mode)
-  Original Author: Haruki Tominaga
-  Customized for Personal Portfolio
--->
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +9,7 @@
     <title>Portfolio - Taro Yamada</title>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Noto+Sans+JP:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* * ==========================================
@@ -26,6 +21,8 @@
             --text: #333333; /* 基本文字色（濃いグレー） */
             --border: #e0e0e0; /* ボーダー色（薄いグレー） */
             --hover-bg: #f5f5f5; /* ホバー時の背景色 */
+            --ny-gold: #FFD700; /* New Year Gold */
+            --ny-pink: #FF85A2;
         }
         
         /* カーソル非表示（カスタムカーソルを使用するため） */
@@ -175,19 +172,6 @@
         }
         .f-contact:hover { letter-spacing: 0.1em; color: #000; }
 
-        /* ★SPECIAL LINK (New Year) */
-        .special-link {
-            display: inline-block; margin-top: 2rem;
-            font-family: 'Syncopate', sans-serif; 
-            font-weight: 700; color: #FF85A2; 
-            border: 1px solid #FF85A2; padding: 10px 20px;
-            border-radius: 50px; font-size: 0.8rem;
-            transition: 0.3s;
-        }
-        .special-link:hover {
-            background: #FF85A2; color: #fff;
-        }
-
         /* Lightbox */
         .lightbox {
             position: fixed; inset: 0; background: rgba(255,255,255,0.98); 
@@ -211,13 +195,12 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
             display: block; width: auto; height: auto;
         }
-        /* ★動画用スタイルの追加 */
+        /* 動画用スタイル */
         .lb-video {
-            width: 100%; height: 50vh; /* デフォルトの高さ */
-            aspect-ratio: 16 / 9;
-            max-width: 100%;
+            width: 100%; height: 50vh; 
+            aspect-ratio: 16 / 9; max-width: 100%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-            display: none; /* 初期状態は非表示 */
+            display: none; 
         }
 
         .lb-info { 
@@ -240,6 +223,110 @@
             font-family: 'Syncopate'; cursor: pointer; z-index: 10;
         }
 
+        /* * ==========================================
+         * ★ NEW YEAR 2026 INTERACTION (Badge & Overlay)
+         * ==========================================
+         */
+        /* 追従バッジボタン */
+        .ny-badge {
+            position: fixed; bottom: 30px; right: 30px; z-index: 4000;
+            background: #fff; color: #333;
+            font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 0.9rem;
+            padding: 15px 30px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            cursor: none; /* カスタムカーソル用 */
+            transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+            border: 2px solid var(--ny-pink);
+            animation: floatBadge 3s infinite ease-in-out;
+        }
+        .ny-badge:hover {
+            transform: scale(1.1);
+            background: var(--ny-pink); color: #fff;
+        }
+        @keyframes floatBadge {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ゲームオーバーレイ */
+        .ny-overlay {
+            position: fixed; inset: 0; z-index: 6000;
+            background: #fff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.5s;
+        }
+        .ny-overlay.active { opacity: 1; pointer-events: auto; }
+
+        #ny-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        .ny-ui {
+            position: relative; z-index: 10; text-align: center;
+            pointer-events: none; /* UI周りのクリックをキャンバスに通すため */
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        .ny-title {
+            font-family: 'Syncopate', sans-serif; font-weight: 700;
+            font-size: 5vw; line-height: 1; margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--ny-pink), #4DD0E1, var(--ny-gold));
+            -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .ny-score {
+            font-family: 'Syncopate'; font-size: 1.5rem; color: #555; margin-bottom: 2rem;
+        }
+        .ny-score span { font-weight: 700; color: var(--ny-pink); font-size: 2rem; }
+
+        /* ゲージ */
+        .hype-bar-container {
+            width: 300px; height: 10px; background: #eee; border-radius: 10px; overflow: hidden;
+            margin: 0 auto 3rem auto; position: relative;
+        }
+        .hype-bar-fill {
+            width: 0%; height: 100%; background: linear-gradient(90deg, var(--ny-pink), var(--ny-gold));
+            transition: 0.1s;
+        }
+        
+        .ny-msg {
+            font-size: 1rem; color: #888; letter-spacing: 0.1em;
+            animation: pulseText 1.5s infinite;
+        }
+        @keyframes pulseText { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+
+        .ny-close {
+            position: absolute; top: 30px; right: 30px;
+            font-family: 'Syncopate'; font-weight: 700; cursor: pointer;
+            padding: 10px 20px; border: 1px solid #ddd; border-radius: 30px;
+            pointer-events: auto; /* ここだけクリック可能に */
+            background: rgba(255,255,255,0.8);
+            transition: 0.3s;
+        }
+        .ny-close:hover { background: #333; color: #fff; border-color: #333; }
+
+        /* フィーバー時の演出 */
+        .ny-overlay.fever .ny-title {
+            animation: shake 0.5s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+
         /* レスポンシブ */
         @media (max-width: 768px) {
             .hero-big { font-size: 15vw; }
@@ -255,6 +342,10 @@
             .lb-video { height: 30vh; }
             .lb-info { width: 100%; padding-bottom: 2rem; }
             .lb-title { font-size: 1.8rem; }
+            
+            .ny-badge { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 0.8rem; }
+            .ny-title { font-size: 15vw; }
+            
             .cursor-dot, .cursor-circle { display: none; }
             * { cursor: auto !important; }
         }
@@ -266,12 +357,32 @@
     <div class="cursor-dot"></div>
     <div class="cursor-circle"></div>
 
+    <!-- ★ New Year 2026 Button (追従バッジ) -->
+    <div id="ny-badge" class="ny-badge hover-target">
+        🎉 2026 SPECIAL
+    </div>
+
+    <!-- ★ New Year Game Overlay -->
+    <div id="ny-overlay" class="ny-overlay">
+        <canvas id="ny-canvas"></canvas>
+        
+        <div class="ny-close hover-target">CLOSE</div>
+        
+        <div class="ny-ui">
+            <div class="ny-title">2026</div>
+            <div class="ny-score">HYPE: <span id="hype-score">0</span>%</div>
+            <div class="hype-bar-container">
+                <div id="hype-bar" class="hype-bar-fill"></div>
+            </div>
+            <div id="ny-msg" class="ny-msg">TAP TO CELEBRATE!</div>
+        </div>
+    </div>
+
     <div id="lightbox" class="lightbox">
         <div class="lb-close hover-target">CLOSE</div>
         <div class="lb-content">
             <div class="lb-img-wrap">
                 <img id="lb-img" class="lb-img" src="" alt="">
-                <!-- ★動画表示用のiframeを追加 -->
                 <iframe id="lb-video" class="lb-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="lb-info">
@@ -325,7 +436,6 @@
         <footer>
             <a href="#" id="contact-link" class="f-contact hover-target">CONTACT ME</a>
             <br>
-            <a href="newyear2026.html" class="special-link hover-target">🎉 SPECIAL: NEW YEAR 2026</a>
             <div style="margin-top: 3rem; color: #888;">
                 &copy; <span id="year"></span> <span id="footer-name"></span>
             </div>
@@ -344,36 +454,31 @@
             desc: "Graduate Student at DHGS.<br>Game Marketer & Freelance Composer.",
             email: "magentabook7@gmail.com", 
             
-            // ★Skillset（スキルリスト）
+            // ★Skillset
             expertiseData: [
                 { 
                     title: "Sound Design", 
                     desc: "コンポーザーとして、ゲーム音楽や映像音楽の制作・リミックスを行います。世界観に寄り添い、プレイヤーの感情を揺さぶるサウンドスケープを提供します。",
-                    // ★YouTubeのURLを貼ってください。自動的に埋め込み形式に変換されます。
                     video: "https://www.youtube.com/watch?v=C5UskEVhGII",
                     image: "https://placehold.co/800x600/eee/333?text=Sound+Design"
                 },
                 { 
                     title: "Game Marketing", 
                     desc: "ゲームタイトルやデバイスのPR戦略立案から実行まで。ターゲット層への的確なアプローチと、コミュニティを巻き込んだマーケティング施策を展開します。",
-                    // 画像リンク切れのためプレースホルダーに戻しました。
-                    // 永続的なURLを取得後、書き換えてください。
                     image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/markering.png?raw=true" 
                 },
                 { 
                     title: "Influencer Mgt", 
                     desc: "インフルエンサーとのリレーション構築およびマネジメント。ゲームの魅力を最大限に引き出す配信企画の提案や、効果的なプロモーションを実施します。",
-                    // 画像リンク切れのためプレースホルダーに戻しました。
                     image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/rush.png?raw=true" 
                 }
             ],
 
-            // ★Selected Works（実績リスト）
+            // ★Selected Works
             worksData: [
                 {
                     title: "AIといっしょに作るKawaiiFutureBass入門ガイド",
                     category: "Technical Doujin Book",
-                    // 画像リンク切れのためプレースホルダーに戻しました。
                     image: "https://github.com/tofumisoshiru/DHGSVR/blob/main/pic/Kawaii.png?raw=true" 
                 },
                 {
@@ -404,7 +509,6 @@
             ]
         };
 
-        // ▼ ロジック部分
         document.addEventListener('DOMContentLoaded', () => {
             // 基本情報反映
             document.getElementById('hero-title').innerHTML = config.title;
@@ -435,7 +539,6 @@
                     div.style.display = 'flex';
                     div.classList.add('visible');
                     div.addEventListener('click', () => {
-                        // ★動画URL(data.video)も渡すように変更
                         openLightbox(imgSrc, data.title, data.desc, data.video);
                     });
                 };
@@ -464,51 +567,32 @@
             // --- ライトボックス制御 ---
             const lb = document.getElementById('lightbox');
             const lbImg = document.getElementById('lb-img');
-            const lbVideo = document.getElementById('lb-video'); // ★動画要素
+            const lbVideo = document.getElementById('lb-video'); 
             const lbTitle = document.getElementById('lb-title');
             const lbDesc = document.getElementById('lb-desc');
             
-            // YouTube URLを埋め込み用に変換するヘルパー関数 (強化版)
             const getEmbedUrl = (url) => {
                 if (!url) return null;
-                // すでにembed形式で、かつパラメータ調整済みならそのまま
                 if (url.includes('/embed/') && url.includes('playsinline=1')) return url;
-                
                 let id = null;
-                
-                // ID抽出ロジック (正規表現)
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
                 const match = url.match(regExp);
-
-                if (match && match[2].length === 11) {
-                    id = match[2];
-                }
-
-                if (id) {
-                    // エラー153回避のため、playsinline等のパラメータを付与
-                    return `https://www.youtube.com/embed/${id}?playsinline=1&rel=0`;
-                }
-                
-                // フォールバック
+                if (match && match[2].length === 11) id = match[2];
+                if (id) return `https://www.youtube.com/embed/${id}?playsinline=1&rel=0`;
                 return url; 
             };
 
-            // ★第4引数に videoUrl を追加
             window.openLightbox = (src, title = null, desc = null, videoUrl = null) => {
                 if (videoUrl) {
-                    // 動画がある場合：画像を隠してiframeを表示
                     lbImg.style.display = 'none';
                     lbVideo.style.display = 'block';
-                    // 自動変換したURLをセット
                     lbVideo.src = getEmbedUrl(videoUrl);
                 } else {
-                    // 動画がない場合：画像をセットしてiframeを隠す
                     lbVideo.style.display = 'none';
                     lbImg.style.display = 'block';
                     lbImg.src = src;
-                    lbVideo.src = ""; // 再生停止
+                    lbVideo.src = ""; 
                 }
-
                 if (title) {
                     lb.classList.add('has-text');
                     lbTitle.textContent = title;
@@ -521,26 +605,161 @@
                 lb.classList.add('active');
             };
 
-            // 閉じる処理
             const closeLightbox = () => {
                 lb.classList.remove('active');
                 setTimeout(() => { 
                     lbImg.src = ''; 
-                    lbVideo.src = ''; // ★動画もリセット
+                    lbVideo.src = ''; 
                     lb.classList.remove('has-text');
                 }, 400);
             };
 
             lb.addEventListener('click', (e) => {
-                // 背景クリック時のみ閉じる（コンテンツクリック時は閉じない）
                 if (e.target === lb || e.target.classList.contains('lb-content') || e.target.classList.contains('lb-img-wrap')) {
                     closeLightbox();
                 }
             });
-            
             document.querySelector('.lb-close').addEventListener('click', closeLightbox);
 
-            // --- カーソル制御 ---
+
+            // ==========================================
+            // ★ NEW YEAR 2026 GAME LOGIC
+            // ==========================================
+            const nyBadge = document.getElementById('ny-badge');
+            const nyOverlay = document.getElementById('ny-overlay');
+            const nyClose = document.querySelector('.ny-close');
+            const nyCanvas = document.getElementById('ny-canvas');
+            const nyCtx = nyCanvas.getContext('2d');
+            
+            const scoreEl = document.getElementById('hype-score');
+            const barFill = document.getElementById('hype-bar');
+            const msgEl = document.getElementById('ny-msg');
+
+            let nyActive = false;
+            let hype = 0;
+            let width, height;
+            let particles = [];
+            let isFever = false;
+
+            // Open/Close
+            nyBadge.addEventListener('click', () => {
+                nyOverlay.classList.add('active');
+                nyActive = true;
+                resizeNyCanvas();
+                animateNyGame();
+            });
+
+            nyClose.addEventListener('click', () => {
+                nyOverlay.classList.remove('active');
+                nyActive = false;
+            });
+
+            // Resize
+            function resizeNyCanvas() {
+                width = nyCanvas.width = window.innerWidth;
+                height = nyCanvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeNyCanvas);
+
+            // Game Logic
+            const gameColors = ['#FF85A2', '#4DD0E1', '#FFEB3B', '#FFD700', '#AD1457', '#0097A7'];
+            
+            class Particle {
+                constructor(x, y) {
+                    this.x = x; this.y = y;
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = Math.random() * 15 + 5;
+                    this.vx = Math.cos(angle) * velocity;
+                    this.vy = Math.sin(angle) * velocity;
+                    this.friction = 0.95;
+                    this.gravity = 0.2;
+                    this.size = Math.random() * 8 + 3;
+                    this.color = gameColors[Math.floor(Math.random() * gameColors.length)];
+                    this.alpha = 1;
+                    this.decay = Math.random() * 0.02 + 0.01;
+                }
+                update() {
+                    this.vx *= this.friction;
+                    this.vy *= this.friction;
+                    this.vy += this.gravity;
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.alpha -= this.decay;
+                }
+                draw() {
+                    nyCtx.save();
+                    nyCtx.globalAlpha = this.alpha;
+                    nyCtx.fillStyle = this.color;
+                    nyCtx.beginPath();
+                    nyCtx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+                    nyCtx.fill();
+                    nyCtx.restore();
+                }
+            }
+
+            function explode(x, y) {
+                for(let i=0; i<30; i++) particles.push(new Particle(x, y));
+            }
+
+            // Click Interaction
+            nyOverlay.addEventListener('mousedown', (e) => {
+                if (!nyActive) return;
+                // Closeボタンなどは除外
+                if (e.target.closest('.ny-close')) return;
+                
+                explode(e.clientX, e.clientY);
+                
+                // Add Score
+                if (!isFever) {
+                    hype += 5;
+                    if (hype > 100) hype = 100;
+                    updateUI();
+                }
+            });
+
+            function updateUI() {
+                scoreEl.textContent = hype;
+                barFill.style.width = hype + '%';
+                
+                if (hype >= 100 && !isFever) {
+                    startFever();
+                }
+            }
+
+            function startFever() {
+                isFever = true;
+                nyOverlay.classList.add('fever');
+                msgEl.textContent = "FEVER TIME! HAPPY NEW YEAR!";
+                msgEl.style.color = "#FFD700";
+                msgEl.style.fontWeight = "bold";
+                msgEl.style.fontSize = "1.5rem";
+            }
+
+            function animateNyGame() {
+                if (!nyActive) return;
+
+                nyCtx.clearRect(0, 0, width, height);
+                // Background overlay (slightly transparent white to leave trails?)
+                // nyCtx.fillStyle = 'rgba(255,255,255,0.1)';
+                // nyCtx.fillRect(0,0,width,height);
+
+                // Fever Logic: Auto Firework
+                if (isFever && Math.random() > 0.8) {
+                    explode(Math.random()*width, Math.random()*height*0.8);
+                }
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.update();
+                    p.draw();
+                    if (p.alpha <= 0) particles.splice(i, 1);
+                }
+
+                requestAnimationFrame(animateNyGame);
+            }
+
+
+            // --- Cursor Control (Global) ---
             const cursorDot = document.querySelector('.cursor-dot');
             const cursorCircle = document.querySelector('.cursor-circle');
             let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
@@ -571,80 +790,62 @@
                 }
             });
 
-            // ==========================================
-            // ★ Canvas背景アニメーション
-            // ==========================================
-            const canvas = document.getElementById('bg-canvas');
-            const ctx = canvas.getContext('2d');
-            let width, height;
-            let blobs = [];
+            // --- Background Canvas (Global) ---
+            const bgCanvas = document.getElementById('bg-canvas');
+            const bgCtx = bgCanvas.getContext('2d');
+            let bgBlobs = [];
+            const bgColors = ['#FF85A2', '#FF5C8D', '#FF85A2', '#4DD0E1', '#00B0FF', '#4DD0E1', '#FFEB3B'];
 
-            const colors = [
-                '#FF85A2', '#FF5C8D', '#FF85A2', '#4DD0E1', '#00B0FF', '#4DD0E1', '#FFEB3B'
-            ];
-
-            class Blob {
+            class BgBlob {
                 constructor() { this.init(); }
                 init() {
                     this.radius = Math.random() * 500 + 400; 
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
+                    this.x = Math.random() * window.innerWidth;
+                    this.y = Math.random() * window.innerHeight;
                     this.vx = (Math.random() - 0.5) * 0.5; 
                     this.vy = (Math.random() - 0.5) * 0.5; 
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.color = bgColors[Math.floor(Math.random() * bgColors.length)];
                     this.originalRadius = this.radius;
                 }
                 update(scrollOffset) {
                     this.x += this.vx;
                     this.y += this.vy;
-                    if (this.x < -this.radius) this.x = width + this.radius;
-                    if (this.x > width + this.radius) this.x = -this.radius;
-                    if (this.y < -this.radius) this.y = height + this.radius;
-                    if (this.y > height + this.radius) this.y = -this.radius;
-
-                    const dx = mouseX - this.x;
-                    const dy = mouseY - this.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    
-                    if (dist < 300) {
-                        this.radius += (this.originalRadius * 1.5 - this.radius) * 0.05;
-                        this.x -= dx * 0.005; 
-                        this.y -= dy * 0.005;
-                    } else {
-                        this.radius += (this.originalRadius - this.radius) * 0.05;
-                    }
+                    if (this.x < -this.radius) this.x = window.innerWidth + this.radius;
+                    if (this.x > window.innerWidth + this.radius) this.x = -this.radius;
+                    if (this.y < -this.radius) this.y = window.innerHeight + this.radius;
+                    if (this.y > window.innerHeight + this.radius) this.y = -this.radius;
                     this.renderY = this.y - scrollOffset * 0.2; 
                 }
                 draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.renderY, this.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                    ctx.closePath();
+                    bgCtx.beginPath();
+                    bgCtx.arc(this.x, this.renderY, this.radius, 0, Math.PI * 2);
+                    bgCtx.fillStyle = this.color;
+                    bgCtx.fill();
+                    bgCtx.closePath();
                 }
             }
 
-            function initCanvas() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-                blobs = [];
+            function initBgCanvas() {
+                bgCanvas.width = window.innerWidth;
+                bgCanvas.height = window.innerHeight;
+                bgBlobs = [];
                 const blobCount = Math.floor(window.innerWidth / 150);
-                for(let i=0; i<blobCount; i++) blobs.push(new Blob());
+                for(let i=0; i<blobCount; i++) bgBlobs.push(new BgBlob());
             }
 
-            function animateCanvas() {
-                ctx.clearRect(0, 0, width, height);
+            function animateBgCanvas() {
+                bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
                 const scrollOffset = window.scrollY;
-                blobs.forEach(blob => {
+                bgBlobs.forEach(blob => {
                     blob.update(scrollOffset);
                     blob.draw();
                 });
-                requestAnimationFrame(animateCanvas);
+                requestAnimationFrame(animateBgCanvas);
             }
 
-            window.addEventListener('resize', initCanvas);
-            initCanvas();
-            animateCanvas();
+            window.addEventListener('resize', initBgCanvas);
+            initBgCanvas();
+            animateBgCanvas();
         });
     </script>
 </body>
